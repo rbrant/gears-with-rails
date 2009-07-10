@@ -11,8 +11,9 @@ $.ajaxSetup({
 
 $(document).ready(function() {
 	
-	console.log('doc ready...')
 	Offline.getOfflineStatus();
+	Store.init();
+	MyGearsApp.init();
 
 	if(Offline.isOffline()){
 			
@@ -20,10 +21,8 @@ $(document).ready(function() {
 		
 				// presence of rowid field indicates editing
 				if($('#rowid').val() == ''){
-					console.log('creating offline person');
 					MyGearsApp.createPerson( $('#person_first_name').val(), $('#person_last_name').val() );
 				}else{
-					console.log('editing offline person');
 					MyGearsApp.updatePerson( $('#rowid').val(), $('#person_first_name').val(), $('#person_last_name').val() );
 				}
 				// redirect to listing
@@ -142,7 +141,6 @@ var MyGearsApp =
 		// step 1: sycn data down
 		$.getJSON("/people", function(data){
 			$.each(data, function(i,item){
-				console.log('creating person in local db')
 				MyGearsApp.createPerson(item.person.first_name, item.person.last_name,item.person.id);
 			});
 		});
@@ -183,7 +181,6 @@ var MyGearsApp =
 	
 	updatePerson:function(id,firstName,lastName)
 	{
-		console.log('updating person..')
 		var person = new Person(parseInt(id)); 
 		person.firstName = firstName;
 		person.lastName = lastName;
@@ -347,11 +344,11 @@ var Offline =
 	getOfflineStatus:function()
 	{
 		if(Offline.isOffline()){
-			$('#offline_status').html("Status: OFFLINE");
+			$('#offline_status span').html("OFFLINE");
 			$('#go_online').show();
 			$('#go_offline').hide();
 		}else{
-			$('#offline_status').html("Status: ONLINE");
+			$('#offline_status span').html("ONLINE");
 			$('#go_online').hide();
 			$('#go_offline').show();	
 		} 
@@ -364,10 +361,8 @@ var Offline =
 	  }else{
 	    alert('offline')
 	  }
-
 	}
 };
 
 
-Store.init();
-MyGearsApp.init();
+
